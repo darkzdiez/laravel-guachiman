@@ -13,7 +13,7 @@ class CreateGuachimanTables extends Migration
      */
     public function up()
     {
-        Schema::connection(config('laravel-guachiman.database_connection'))->create(config('laravel-guachiman.table_name'), function (Blueprint $table) {
+        Schema::connection(config('guachiman.database_connection'))->create(config('guachiman.table_name'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('log_name')->nullable();
             $table->text('description');
@@ -40,6 +40,6 @@ class CreateGuachimanTables extends Migration
      */
     public function down()
     {
-        Schema::connection(config('laravel-guachiman.database_connection'))->dropIfExists(config('laravel-guachiman.table_name'));
+        Schema::connection(config('guachiman.database_connection'))->dropIfExists(config('guachiman.table_name'));
     }
 }
