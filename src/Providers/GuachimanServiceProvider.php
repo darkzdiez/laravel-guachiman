@@ -15,9 +15,12 @@ class GuachimanServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
         // $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
-        $this->publishes([
-            __DIR__.'/../../config/guachiman.php' => config_path('guachiman.php'),
-        ], 'config');
+        
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../../config/guachiman.php' => config_path('guachiman.php'),
+            ], 'config');
+        }
     }
 
     /**
