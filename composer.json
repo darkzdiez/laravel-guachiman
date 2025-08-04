@@ -1,0 +1,23 @@
+{
+    "name": "aporteweb/laravel-guachiman",
+    "authors": [
+        {
+            "name": "Alfonzo Diez",
+            "email": "alfonzodiez@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "AporteWeb\\Guachiman\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AporteWeb\\Guachiman\\Providers\\GuachimanServiceProvider"
+            ]
+        }
+    }
+}
