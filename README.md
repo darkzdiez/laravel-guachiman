@@ -10,6 +10,12 @@ Puedes instalar el paquete a través de composer:
 composer require aporteweb/laravel-guachiman
 ```
 
+> **Nota:** Si estás trabajando en un entorno de desarrollo y necesitas la última versión, puedes usar `dev-main`:
+>
+> ```bash
+> composer require aporteweb/laravel-guachiman:dev-main
+> ```
+
 El proveedor de servicios se registrará automáticamente gracias al auto-descubrimiento de paquetes de Laravel.
 
 ### Publicar archivos
@@ -38,11 +44,11 @@ Esto creará un archivo `config/guachiman.php` en tu aplicación donde puedes ca
 
 ### 1. Registro automático de eventos de modelo
 
-Para registrar automáticamente los eventos `created`, `updated` y `deleted` de tus modelos de Eloquent, solo necesitas usar el trait `App\Traits\LogsChanges` en tu modelo.
+Para registrar automáticamente los eventos `created`, `updated` y `deleted` de tus modelos de Eloquent, solo necesitas usar el trait `AporteWeb\Guachiman\Traits\LogsChanges` en tu modelo.
 
 ```php
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\LogsChanges;
+use AporteWeb\Guachiman\Traits\LogsChanges;
 
 class Product extends Model
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Destefano\Guachiman\Logger;
+namespace AporteWeb\Guachiman\Logger;
 
-use Destefano\Guachiman\Models\Activity;
+use AporteWeb\Guachiman\Models\Activity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 

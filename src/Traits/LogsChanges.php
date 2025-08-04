@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits;
+namespace AporteWeb\Guachiman\Traits;
 
 use Destefano\Guachiman\Models\Activity;
 use Illuminate\Database\Eloquent\Model;
