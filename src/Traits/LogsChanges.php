@@ -2,7 +2,7 @@
 
 namespace AporteWeb\Guachiman\Traits;
 
-use Destefano\Guachiman\Models\Activity;
+use AporteWeb\Guachiman\Models\Activity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
