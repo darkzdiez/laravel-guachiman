@@ -27,8 +27,12 @@ trait LogsChanges
             foreach ($changes as $field => $newValue) {
                 try {
                     if (in_array($field, $model->loggable ?? []) && $original[$field] != $newValue) {
+
+                        $loggableLabels = $model->loggableLabels ?? [];
+
                         $properties[] = [
                             'field' => $field,
+                            'label' => $loggableLabels[$field] ?? null,
                             'old_value' => $original[$field],
                             'new_value' => $newValue,
                         ];
@@ -46,11 +50,13 @@ trait LogsChanges
                                     $found = true;
                                     $properties[$k]['old_value'] = $old_value[$key];
                                     $properties[$k]['new_value'] = $new_value[$key];
+                                    $properties[$k]['label'] = $loggableLabels[$key] ?? null;
                                 }
                             }
                             if (!$found) {
                                 $properties[] = [
                                     'field' => $key,
+                                    'label' => $loggableLabels[$key] ?? null,
                                     'old_value' => $old_value[$key],
                                     'new_value' => $new_value[$key],
                                 ];

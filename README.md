@@ -73,6 +73,44 @@ class Product extends Model
 }
 ```
 
+#### Añadir etiquetas personalizadas a los atributos
+
+Puedes definir etiquetas personalizadas para los atributos registrados. Estas etiquetas se guardarán en el JSON de propiedades, lo que puede ser útil para mostrar los cambios de una manera más amigable en la interfaz de usuario.
+
+Para ello, añade una propiedad pública `$loggableLabels` a tu modelo:
+
+```php
+class Product extends Model
+{
+    use LogsChanges;
+
+    protected $loggable = ['name', 'price', 'stock_quantity'];
+
+    public $loggableLabels = [
+        'name' => 'Nombre del Producto',
+        'price' => 'Precio',
+        'stock_quantity' => 'Cantidad en Stock',
+    ];
+
+    // ...
+}
+```
+
+El registro de actividad para una actualización de `stock_quantity` se vería así:
+
+```json
+{
+    "changes": [
+        {
+            "field": "stock_quantity",
+            "label": "Cantidad en Stock",
+            "new_value": "10",
+            "old_value": "15"
+        }
+    ]
+}
+```
+
 ### 2. Registro manual de actividad
 
 También puedes registrar actividades manualmente usando la función de ayuda `activity()`. Esto es útil para registrar acciones que no están directamente relacionadas con un evento de modelo.
