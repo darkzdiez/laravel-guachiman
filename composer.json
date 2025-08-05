@@ -1,5 +1,7 @@
 {
     "name": "aporteweb/laravel-guachiman",
+    "description": "Guardia de seguridad para laravel",
+    "license": "MIT",
     "authors": [
         {
             "name": "Alfonzo Diez",

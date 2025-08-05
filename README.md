@@ -177,3 +177,7 @@ Esto creará un registro de actividad con:
 - description: "El producto NombreDelProducto fue exportado"
 */
 ```
+
+## Licencia
+
+Este paquete se distribuye bajo la licencia MIT. Consulta el archivo `LICENSE` para más detalles.
