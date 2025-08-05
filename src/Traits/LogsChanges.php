@@ -85,7 +85,7 @@ trait LogsChanges
                     'event' => 'update',
                     'causer_type' => Auth::user() ? get_class(Auth::user()) : null,
                     'causer_id' => Auth::id(),
-                    'causer_name' => Auth::user() ? Auth::user()->name : null,
+                    'causer_name' => Auth::user()?->resolved_description,
                     'properties' => ['changes' => $properties],
                     'ref_name' => $loggableRefName,
                     'ref' => $loggableRefValue,

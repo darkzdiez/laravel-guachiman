@@ -111,6 +111,27 @@ El registro de actividad para una actualización de `stock_quantity` se vería a
 }
 ```
 
+#### Personalizar el nombre del causante del evento
+
+Por defecto, el campo `causer_name` se llena con el atributo `name` del usuario autenticado. Si deseas usar un atributo diferente o una combinación de atributos (por ejemplo, nombre y apellido), puedes añadir un accesor `getResolvedDescriptionAttribute` a tu modelo `User`.
+
+```php
+// En tu modelo App\Models\User
+
+class User extends Authenticatable
+{
+    // ...
+
+    /**
+     * Devuelve el nombre completo del usuario.
+     */
+    public function getResolvedDescriptionAttribute()
+    {
+        return $this->fullname; // o $this->first_name . ' ' . $this->last_name;
+    }
+}
+```
+
 ### 2. Registro manual de actividad
 
 También puedes registrar actividades manualmente usando la función de ayuda `activity()`. Esto es útil para registrar acciones que no están directamente relacionadas con un evento de modelo.
