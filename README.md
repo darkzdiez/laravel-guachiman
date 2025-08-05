@@ -178,6 +178,9 @@ Esto creará un registro de actividad con:
 */
 ```
 
+## Referencias
+Esta libreria esta inspirada en el paquete [spatie/laravel-activitylog](https://github.com/spatie/laravel-activitylog)
+
 ## Licencia
 
 Este paquete se distribuye bajo la licencia MIT. Consulta el archivo `LICENSE` para más detalles.
