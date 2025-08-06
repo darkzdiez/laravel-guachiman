@@ -2,6 +2,7 @@
 
 namespace AporteWeb\Guachiman\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -28,6 +29,10 @@ class Activity extends Model
         'properties' => 'json',
     ];
 
+    protected $appends = [
+        'created_at_formatted',
+    ];
+
     public function __construct(array $attributes = [])
     {
         if (! isset($this->connection)) {
@@ -49,5 +54,12 @@ class Activity extends Model
     public function causer(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    protected function createdAtFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value, $attributes) => isset($attributes['created_at']) ? \Carbon\Carbon::parse($attributes['created_at'])->format('d/m/Y h:i A') : null,
+        );
     }
 }
