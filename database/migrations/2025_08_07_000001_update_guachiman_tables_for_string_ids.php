@@ -14,14 +14,14 @@ class UpdateGuachimanTablesForStringIds extends Migration
     public function up()
     {
         Schema::connection(config('guachiman.database_connection'))->table(config('guachiman.table_name'), function (Blueprint $table) {
-            $table->dropIndex(['subject_id', 'subject_type']);
-            $table->dropIndex(['causer_id', 'causer_type']);
+            $table->dropIndex(['subject']);
+            $table->dropIndex(['causer']);
 
             $table->string('subject_id')->nullable()->change();
             $table->string('causer_id')->nullable()->change();
 
-            $table->index(['subject_id', 'subject_type']);
-            $table->index(['causer_id', 'causer_type']);
+            $table->index(['subject_type', 'subject_id'], 'subject');
+            $table->index(['causer_type', 'causer_id'], 'causer');
         });
     }
 
@@ -33,17 +33,16 @@ class UpdateGuachimanTablesForStringIds extends Migration
     public function down()
     {
         Schema::connection(config('guachiman.database_connection'))->table(config('guachiman.table_name'), function (Blueprint $table) {
-            $table->dropIndex(['subject_id', 'subject_type']);
-            $table->dropIndex(['causer_id', 'causer_type']);
+            $table->dropIndex(['subject']);
+            $table->dropIndex(['causer']);
 
             // This assumes original IDs were unsigned big integers.
             // A down migration might involve data loss if string IDs are in use.
             $table->unsignedBigInteger('subject_id')->nullable()->change();
             $table->unsignedBigInteger('causer_id')->nullable()->change();
 
-            $tableName = config('guachiman.table_name');
-            $table->index(['subject_id', 'subject_type'], "{$tableName}_subject_id_subject_type_index");
-            $table->index(['causer_id', 'causer_type'], "{$tableName}_causer_id_causer_type_index");
+            $table->index(['subject_id', 'subject_type'], 'subject');
+            $table->index(['causer_id', 'causer_type'], 'causer');
         });
     }
 }
