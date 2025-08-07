@@ -22,7 +22,7 @@ class ActivityLogController extends Controller {
                 'properties' => [
                     'changes' => collect($activity->properties['changes'] ?? [])->map(function ($change) {
                         return [
-                            'label' => $change['label'] ?? null,
+                            'label' => $change['label'] ?? $change['field'] ?? 'N/A',
                             'old_value' => $change['old_value'] ?? null,
                             'new_value' => $change['new_value'] ?? null,
                         ];
