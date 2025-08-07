@@ -48,12 +48,12 @@ class Activity extends Model
 
     public function subject(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('subject', 'subject_type', 'subject_id');
     }
 
     public function causer(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('causer', 'causer_type', 'causer_id');
     }
 
     protected function createdAtFormatted(): Attribute

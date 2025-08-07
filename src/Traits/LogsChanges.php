@@ -14,8 +14,8 @@ trait LogsChanges
         static::updated(function (Model $model) {
             $changes = $model->getDirty();
             $original = $model->getOriginal();
-            $loggableRefName = $model->loggableRef ?? 'id';
-            $loggableRefValue = $model->{$model->loggableRef} ?? $model->id;
+            $loggableRefName = $model->getKeyName();
+            $loggableRefValue = $model->getKey();
 
             // si $model->loggable es null, o es un array vacio, se loguean todas las columnas
             if (is_null($model->loggable) || empty($model->loggable)) {
@@ -101,8 +101,8 @@ trait LogsChanges
             }
         });
         static::created(function (Model $model) {
-            $loggableRefName = $model->loggableRef ?? 'id';
-            $loggableRefValue = $model->{$model->loggableRef} ?? $model->id;
+            $loggableRefName = $model->getKeyName();
+            $loggableRefValue = $model->getKey();
             $userName = Auth::user() ? Auth::user()->name : 'system';
             $description = "El usuario {$userName} creó el registro {$loggableRefValue} en la tabla " . $model->getTable();
 
@@ -128,8 +128,8 @@ trait LogsChanges
             Activity::create($logData);
         });
         static::deleted(function (Model $model) {
-            $loggableRefName = $model->loggableRef ?? 'id';
-            $loggableRefValue = $model->{$model->loggableRef} ?? $model->id;
+            $loggableRefName = $model->getKeyName();
+            $loggableRefValue = $model->getKey();
             $userName = Auth::user() ? Auth::user()->name : 'system';
             $description = "El usuario {$userName} eliminó el registro {$loggableRefValue} en la tabla " . $model->getTable();
 
