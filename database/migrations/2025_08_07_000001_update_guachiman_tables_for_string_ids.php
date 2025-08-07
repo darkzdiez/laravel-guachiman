@@ -14,8 +14,8 @@ class UpdateGuachimanTablesForStringIds extends Migration
     public function up()
     {
         Schema::connection(config('guachiman.database_connection'))->table(config('guachiman.table_name'), function (Blueprint $table) {
-            $table->dropIndex(['subject']);
-            $table->dropIndex(['causer']);
+            $table->dropIndex('subject');
+            $table->dropIndex('causer');
 
             $table->string('subject_id')->nullable()->change();
             $table->string('causer_id')->nullable()->change();
@@ -33,8 +33,8 @@ class UpdateGuachimanTablesForStringIds extends Migration
     public function down()
     {
         Schema::connection(config('guachiman.database_connection'))->table(config('guachiman.table_name'), function (Blueprint $table) {
-            $table->dropIndex(['subject']);
-            $table->dropIndex(['causer']);
+            $table->dropIndex('subject');
+            $table->dropIndex('causer');
 
             // This assumes original IDs were unsigned big integers.
             // A down migration might involve data loss if string IDs are in use.
