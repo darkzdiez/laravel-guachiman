@@ -6,7 +6,7 @@ use AporteWeb\Guachiman\Models\Activity;
 
 class ActivityLogController extends Controller {
     public function timeline($log_name, $log_ref) {
-        $activities = Activity::with(['causer:id,fullname'])
+        $activities = Activity::with(['causer'])
             ->where('log_name', $log_name)
             ->where('ref', $log_ref)
             ->orderBy('created_at', 'desc')
@@ -17,7 +17,7 @@ class ActivityLogController extends Controller {
                 'event' => $activity->event,
                 'created_at_formatted' => $activity->created_at_formatted,
                 'causer' => [
-                    'fullname' => $activity->causer?->fullname,
+                    'fullname' => $activity->causer?->resolved_description,
                 ],
                 'properties' => [
                     'changes' => collect($activity->properties['changes'] ?? [])->map(function ($change) {
