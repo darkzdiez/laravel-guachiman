@@ -14,9 +14,8 @@ class UpdateGuachimanTablesForStringIds extends Migration
     public function up()
     {
         Schema::connection(config('guachiman.database_connection'))->table(config('guachiman.table_name'), function (Blueprint $table) {
-            $tableName = config('guachiman.table_name');
-            $table->dropIndex("{$tableName}_subject_id_subject_type_index");
-            $table->dropIndex("{$tableName}_causer_id_causer_type_index");
+            $table->dropIndex(['subject_id', 'subject_type']);
+            $table->dropIndex(['causer_id', 'causer_type']);
 
             $table->string('subject_id')->nullable()->change();
             $table->string('causer_id')->nullable()->change();
