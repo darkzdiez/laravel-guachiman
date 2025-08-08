@@ -68,7 +68,7 @@ trait LogsChanges
                         'field' => $field,
                         'old_value' => array_key_exists($field, $original) ? $original[$field] : null,
                         'new_value' => $newValue,
-                        'error' => $th->getMessage(),
+                        'error' => $th->getMessage() . ' in ' . $th->getFile() . ' on line ' . $th->getLine()
                     ];
                 }
             }
