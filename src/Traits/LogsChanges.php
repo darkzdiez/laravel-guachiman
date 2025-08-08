@@ -40,26 +40,16 @@ trait LogsChanges
                         // si el campo se llama proveedor_id, se busca el metodo resolveProveedorIdLoggable
                         $methodName = 'resolve' . Str::studly($field) . 'Loggable';
                         if (method_exists($model, $methodName)) {
-                            $old_value = $model->$methodName($original[$field]);
+                            $old_value = $model->$methodName($original[$field] ?? null);
                             $new_value = $model->$methodName($newValue);
-                            $key = array_keys($old_value)[0];
-                            // chequear si en $properties ya existe un campo con el mismo nombre
-                            $found = false;
-                            foreach ($properties as $k => $v) {
-                                if ($v['field'] == $key) {
-                                    $found = true;
-                                    $properties[$k]['old_value'] = $old_value[$key];
-                                    $properties[$k]['new_value'] = $new_value[$key];
-                                    $properties[$k]['label'] = $loggableLabels[$key] ?? null;
-                                }
-                            }
-                            if (!$found) {
-                                $properties[] = [
-                                    'field' => $key,
-                                    'label' => $loggableLabels[$key] ?? null,
-                                    'old_value' => $old_value[$key],
-                                    'new_value' => $new_value[$key],
-                                ];
+                            
+                            // Sobrescribimos los valores con su versión "resuelta" para el log y conservamos los crudos
+                            $idx = count($properties) - 1;
+                            if ($idx >= 0) {
+                                $properties[$idx]['old_value_raw'] = array_key_exists($field, $original) ? $original[$field] : null;
+                                $properties[$idx]['new_value_raw'] = $newValue;
+                                $properties[$idx]['old_value'] = $old_value;
+                                $properties[$idx]['new_value'] = $new_value;
                             }
                         }
                     }
