@@ -33,5 +33,11 @@ class GuachimanServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../../config/guachiman.php', 'guachiman'
         );
+
+        // Cargar helpers del paquete (activity())
+        $helpers = __DIR__ . '/../helpers.php';
+        if (file_exists($helpers)) {
+            require_once $helpers;
+        }
     }
 }

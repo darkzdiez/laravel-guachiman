@@ -1,6 +1,6 @@
 <?php
 
-use Destefano\Guachiman\Logger\ActivityLogger;
+use AporteWeb\Guachiman\Logger\ActivityLogger;
 
 if (! function_exists('activity')) {
     function activity(): ActivityLogger
