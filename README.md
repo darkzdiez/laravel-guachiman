@@ -178,6 +178,97 @@ Esto creará un registro de actividad con:
 */
 ```
 
+### 3. Registrar cambios en relaciones (attach/detach/sync) de forma estándar
+
+Cuando sincronizas relaciones muchos-a-muchos (belongsToMany), suele ser útil registrar qué IDs se agregaron o quitaron, junto con etiquetas legibles. Para esto, el paquete expone un método genérico en el logger:
+
+Contratos rápidos:
+- Input
+    - relationName: nombre lógico de la relación (string)
+    - originalIds: array de IDs antes de sync
+    - newIds: array de IDs después de sync
+    - labelsById: map opcional [id => label]
+    - meta: array opcional para meta-datos (ej: ['label' => 'Grupos'])
+- Output
+    - Se agrega un ítem a properties.changes[] con old/new/added/removed y sus labels
+
+Ejemplo práctico con Users y Groups (belongsToMany):
+
+```php
+use App\Models\User;
+use AporteWeb\Dashboard\Models\Group;
+use Illuminate\Support\Facades\Auth;
+
+// En tu controlador o servicio, antes y después de sync
+$user = $id ? User::where('uuid', $id)->first() : new User;
+
+// Capturar IDs originales (si existe)
+$originalGroupIds = $user->exists ? $user->groups()->pluck('id')->all() : [];
+
+// Guardar datos del usuario como necesites
+// ... $user->fill(...); $user->save();
+
+// Convertir UUIDs recibidos a IDs y sincronizar
+$groupUuids = is_array($request->groups) ? $request->groups : explode(',', (string) $request->groups);
+$groupUuids = array_filter($groupUuids);
+$newGroupIds = $groupUuids ? Group::whereIn('uuid', $groupUuids)->pluck('id')->all() : [];
+$user->groups()->sync($newGroupIds);
+
+// Preparar labels opcionales para mejores mensajes
+$allIds = array_values(array_unique(array_merge($originalGroupIds, $newGroupIds)));
+$labelsById = $allIds ? Group::whereIn('id', $allIds)->pluck('name', 'id')->toArray() : [];
+
+// Descripción amigable
+$actorName = Auth::user() ? Auth::user()->name : 'system';
+$description = $user->wasRecentlyCreated
+        ? "El usuario {$actorName} asignó grupos al usuario {$user->id}"
+        : "El usuario {$actorName} actualizó los grupos del usuario {$user->id}";
+
+// Log estandarizado del diff de relación
+activity()
+        ->onModel($user)                 // setea subject, log_name, ref_name y ref
+        ->forEvent($user->wasRecentlyCreated ? 'create' : 'update')
+        ->describe($description)
+        ->logRelationSync('groups', $originalGroupIds, $newGroupIds, $labelsById, ['label' => 'Grupos']);
+```
+
+El registro generado incluirá en `properties.changes[0]`:
+
+```json
+{
+    "field": "groups",
+    "label": "Grupos",
+    "old_value": [1, 2],
+    "new_value": [2, 3],
+    "old_labels": ["Admin", "Ventas"],
+    "new_labels": ["Ventas", "Compras"],
+    "added": {"ids": [3], "labels": ["Compras"]},
+    "removed": {"ids": [1], "labels": ["Admin"]}
+}
+```
+
+#### Otros métodos útiles del logger
+
+Puedes encadenar métodos para personalizar los campos de Activity de forma declarativa:
+
+```php
+activity()
+    ->onModel($subject)               // subject + log_name/ref_name/ref
+    ->onLogName('custom_log')         // sobreescribe log_name
+    ->forEvent('update')              // event libre ('create', 'update', 'delete', etc.)
+    ->withRef('uuid', $subject->uuid) // setea ref_name/ref a mano si quieres
+    ->withProperties(['ctx' => 'val'])
+    ->withProperty('trace_id', $trace)
+    ->describe('Texto descriptivo')
+    ->log('Descripción final opcional');
+```
+
+Notas:
+- `activity()` helper se auto-carga desde el ServiceProvider del paquete.
+- `logRelationSync` no guarda si no hay cambios (no added/removed).
+- `labelsById` es opcional, pero recomendado para UI.
+- Performance: si manejas relaciones muy grandes, considera limitar IDs o paginar para construir `labelsById`.
+
 ## Referencias
 Esta libreria esta inspirada en el paquete [spatie/laravel-activitylog](https://github.com/spatie/laravel-activitylog)
 
