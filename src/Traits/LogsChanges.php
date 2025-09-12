@@ -17,9 +17,10 @@ trait LogsChanges
             $loggableRefName = $model->getKeyName();
             $loggableRefValue = $model->getKey();
 
-            // si $model->loggable es null, o es un array vacio, se loguean todas las columnas
+            // si $model->loggable es null, o es un array vacio, se loguean todas las columnas, excepto created_at, updated_at y deleted_at
             if (is_null($model->loggable) || empty($model->loggable)) {
                 $model->loggable = array_keys($changes);
+                $model->loggable = array_diff($model->loggable, ['created_at', 'updated_at', 'deleted_at']);
             }
 
             $properties = [];
