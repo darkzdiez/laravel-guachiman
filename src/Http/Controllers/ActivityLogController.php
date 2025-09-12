@@ -25,6 +25,10 @@ class ActivityLogController extends Controller {
                             'label' => $change['label'] ?? $change['field'] ?? 'N/A',
                             'old_value' => $change['old_value'] ?? null,
                             'new_value' => $change['new_value'] ?? null,
+                            'added' => $change['added'] ?? null,
+                            'removed' => $change['removed'] ?? null,
+                            'old_labels' => $change['old_labels'] ?? null,
+                            'new_labels' => $change['new_labels'] ?? null,
                         ];
                     })
                 ],
