@@ -24,8 +24,14 @@ class ActivityLogger
     {
         $this->performedOn($subject);
         $this->activity->log_name = $subject->getTable();
-        $this->activity->ref_name = $subject->getKeyName();
-        $this->activity->ref = $subject->getKey();
+        $refName = method_exists($subject, 'getLoggableRefNameForLog')
+            ? $subject->getLoggableRefNameForLog()
+            : $subject->getKeyName();
+        $refValue = method_exists($subject, 'getLoggableRefValueForLog')
+            ? $subject->getLoggableRefValueForLog($refName)
+            : $subject->getKey();
+        $this->activity->ref_name = $refName;
+        $this->activity->ref = $refValue;
         return $this;
     }
 
