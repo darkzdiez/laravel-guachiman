@@ -9,41 +9,18 @@ use Illuminate\Support\Str;
 
 trait LogsChanges
 {
-    /**
-     * Obtiene el nombre de referencia a usar en los logs (ref_name).
-     * Permite sobrescribirlo en el modelo definiendo una propiedad pública `$loggableRefName`.
-     */
-    protected function getLoggableRefNameForLog(): string
-    {
-        // Si el modelo define una propiedad pública $loggableRefName, úsala; si no, el keyName por defecto.
-        return property_exists($this, 'loggableRefName') && !empty($this->loggableRefName)
-            ? (string) $this->loggableRefName
-            : $this->getKeyName();
-    }
-
-    /**
-     * Obtiene el valor de referencia a usar en los logs (ref).
-     * Si el nombre de referencia es distinto al keyName, intenta obtener el atributo correspondiente.
-     */
-    protected function getLoggableRefValueForLog(string $refName)
-    {
-        if ($refName === $this->getKeyName()) {
-            return $this->getKey();
-        }
-        // Retorna el atributo si existe; caso contrario, vuelve al key por seguridad
-        return $this->getAttribute($refName) ?? $this->getKey();
-    }
+    // Nota: Dejamos la resolución de ref_name/ref en los listeners para evitar accesos a métodos protegidos desde fuera.
     public static function bootLogsChanges()
     {
         static::updated(function (Model $model) {
             $changes = $model->getDirty();
             $original = $model->getOriginal();
-            $loggableRefName = method_exists($model, 'getLoggableRefNameForLog')
-                ? $model->getLoggableRefNameForLog()
+            $loggableRefName = property_exists($model, 'loggableRefName') && !empty($model->loggableRefName)
+                ? (string) $model->loggableRefName
                 : $model->getKeyName();
-            $loggableRefValue = method_exists($model, 'getLoggableRefValueForLog')
-                ? $model->getLoggableRefValueForLog($loggableRefName)
-                : $model->getKey();
+            $loggableRefValue = $loggableRefName === $model->getKeyName()
+                ? $model->getKey()
+                : ($model->getAttribute($loggableRefName) ?? $model->getKey());
 
             // si $model->loggable es null, o es un array vacio, se loguean todas las columnas, excepto created_at, updated_at y deleted_at
             if (is_null($model->loggable) || empty($model->loggable)) {
@@ -120,12 +97,12 @@ trait LogsChanges
             }
         });
         static::created(function (Model $model) {
-            $loggableRefName = method_exists($model, 'getLoggableRefNameForLog')
-                ? $model->getLoggableRefNameForLog()
+            $loggableRefName = property_exists($model, 'loggableRefName') && !empty($model->loggableRefName)
+                ? (string) $model->loggableRefName
                 : $model->getKeyName();
-            $loggableRefValue = method_exists($model, 'getLoggableRefValueForLog')
-                ? $model->getLoggableRefValueForLog($loggableRefName)
-                : $model->getKey();
+            $loggableRefValue = $loggableRefName === $model->getKeyName()
+                ? $model->getKey()
+                : ($model->getAttribute($loggableRefName) ?? $model->getKey());
             $userName = Auth::user() ? Auth::user()->name : 'system';
             $description = "El usuario {$userName} creó el registro {$loggableRefValue} en la tabla " . $model->getTable();
 
@@ -151,12 +128,12 @@ trait LogsChanges
             Activity::create($logData);
         });
         static::deleted(function (Model $model) {
-            $loggableRefName = method_exists($model, 'getLoggableRefNameForLog')
-                ? $model->getLoggableRefNameForLog()
+            $loggableRefName = property_exists($model, 'loggableRefName') && !empty($model->loggableRefName)
+                ? (string) $model->loggableRefName
                 : $model->getKeyName();
-            $loggableRefValue = method_exists($model, 'getLoggableRefValueForLog')
-                ? $model->getLoggableRefValueForLog($loggableRefName)
-                : $model->getKey();
+            $loggableRefValue = $loggableRefName === $model->getKeyName()
+                ? $model->getKey()
+                : ($model->getAttribute($loggableRefName) ?? $model->getKey());
             $userName = Auth::user() ? Auth::user()->name : 'system';
             $description = "El usuario {$userName} eliminó el registro {$loggableRefValue} en la tabla " . $model->getTable();
 
