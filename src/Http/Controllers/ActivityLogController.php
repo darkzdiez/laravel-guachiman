@@ -10,7 +10,7 @@ class ActivityLogController extends Controller {
             ->where('log_name', $log_name)
             ->where('ref', $log_ref)
             ->orderBy('created_at', 'desc')
-            ->get(['id', 'log_name', 'ref', 'event', 'properties', 'created_at', 'causer_id', 'causer_type']);
+            ->get(['id', 'log_name', 'ref', 'event', 'description', 'properties', 'created_at', 'causer_id', 'causer_type']);
 
         $formattedActivities = $activities->map(function ($activity) {
             return [
