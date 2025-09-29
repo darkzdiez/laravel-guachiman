@@ -19,6 +19,7 @@ class ActivityLogController extends Controller {
                 'causer' => [
                     'fullname' => $activity->causer?->resolved_description,
                 ],
+                'description' => $activity->description,
                 'properties' => [
                     'changes' => collect($activity->properties['changes'] ?? [])->map(function ($change) {
                         return [
