@@ -87,6 +87,7 @@ trait LogsChanges
                     'ref' => $loggableRefValue,
                     'sapi_name' => php_sapi_name(),
                     'ip_address' => request()->ip(),
+                    'channel' => config('app.current_channel', php_sapi_name() === 'cli' ? 'cli' : 'web'),
                 ];
 
                 if (method_exists($model, 'getParentLogData')) {

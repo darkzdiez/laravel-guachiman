@@ -22,6 +22,7 @@ class Activity extends Model
         'ref',
         'sapi_name',
         'ip_address',
+        'channel',
         'batch_uuid',
     ];
 
